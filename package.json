@@ -4,9 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "bun --env-file=env/.dev.env api/app.ts",
+    "start": "bun api/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ",
+    "dev": "bun --env-file=env/.dev.env api/app.ts ",
     "biome": "bunx --bun biome format --write ./api ./public ./src"
   },
   "devDependencies": {
