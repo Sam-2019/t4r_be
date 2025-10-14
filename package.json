@@ -1,0 +1,37 @@
+{
+  "name": "t4r_bd",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun --env-file=env/.dev.env api/app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ",
+    "biome": "bunx --bun biome format --write ./api ./public ./src"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.5",
+    "@faker-js/faker": "^10.0.0",
+    "@types/bun": "latest",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "biome": "^0.3.3",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@scalar/express-api-reference": "^0.8.21",
+    "@zodyac/zod-mongoose": "^4.2.0",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.1",
+    "path": "^0.12.7",
+    "zod": "^4.1.12",
+    "zod-openapi": "^5.4.3"
+  }
+}
