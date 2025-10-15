@@ -40,6 +40,11 @@ const dataSchema = new Schema(
       required: true,
       trim: true,
     },
+    otherName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     number: {
       type: String,
       required: true,
@@ -95,11 +100,6 @@ const dataSchema = new Schema(
       trim: true,
     },
     currencySuffix: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    url: {
       type: String,
       required: true,
       trim: true,

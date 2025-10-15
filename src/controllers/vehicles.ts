@@ -43,7 +43,6 @@ export const getVehicles = async (
         .json({ message: notFound, data: [] });
     }
 
-    console.log({ vehicles });
     res.status(httpStatus.OK).json({ data: vehicles });
   } catch (error) {
     next(error);

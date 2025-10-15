@@ -68,6 +68,7 @@ const vehicleSchema = z.object({
   regId: z.string().trim().nonempty(),
   new: z.boolean().nonoptional(),
   name: z.string().trim().nonempty(),
+  otherName: z.string().trim().nonempty(),
   number: z.string().trim().nonempty(),
   mileage: z.string().trim().optional(),
   gearbox: z.string().trim().optional(),
