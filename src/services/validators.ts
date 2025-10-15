@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+const purchaseInfoSchema = z.object({
+  amount: z.number(),
+  clientReference: z.string().trim().nonempty(),
+  customerPhoneNumber: z.string().trim().nonempty(),
+  purchaseDescription: z.string().trim().nonempty(),
+});
+
 const requestorSchema = z.object({
   name: z.string().trim().nonempty(),
   contact: z.string().trim().nonempty(),
@@ -17,6 +24,11 @@ const saleSchema = z.object({
   materialType: z.string().trim().nonempty(),
   description: z.string().trim().nonempty(),
   amount: z.number(),
+  provider: z.string().trim().nonempty(),
+  providerResponse: z.object({}),
+  purchaseInfo: purchaseInfoSchema,
+  transactionId: z.string().trim().nonempty(),
+  externalTransactionId: z.string().trim().nonempty(),
 });
 
 const saleIdSchema = z.object({
@@ -38,6 +50,7 @@ const requestSchema = z.object({
   materialType: z.string().trim().nonempty(),
   description: z.string().trim().nonempty(),
   amount: z.number(),
+  clientReference: z.string().trim().nonempty(),
 });
 
 const requestIdSchema = z.object({
