@@ -39,12 +39,10 @@ const dataSchema = new Schema(
     },
     materialType: {
       type: String,
-      required: true,
       trim: true,
     },
     description: {
       type: String,
-      required: true,
       trim: true,
     },
     amount: {
@@ -52,6 +50,16 @@ const dataSchema = new Schema(
       required: true,
       trim: true,
     },
+    clientReference: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    provider: { type: String, required: true, trim: true },
+    providerResponse: { type: Object, required: true, trim: true },
+    purchaseInfo: { type: Object, required: true, trim: true },
+    transactionId: { type: String, required: true, trim: true },
+    externalTransactionId: { type: String, required: true, trim: true },
   },
   {
     timestamps: true,
