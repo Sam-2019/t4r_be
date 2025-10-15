@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
+import { referenceSchema, saleSchema } from "@/services/validators";
 import { httpStatus, notFound, saleAdded } from "@/config/constants";
-import { queryReferenceSchema, saleSchema } from "@/services/validators";
 import { addsale, findsale, getsales } from "@/services/db/repository/sale";
 
 // create sale
@@ -50,7 +50,7 @@ export const getSale = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const result = queryReferenceSchema.safeParse(req);
+  const result = referenceSchema.safeParse(req);
   if (!result.success) {
     return res
       .status(httpStatus.BAD_REQUEST)
@@ -58,7 +58,7 @@ export const getSale = async (
   }
 
   try {
-    const sale = await findsale(result.data.query.clientReference);
+    const sale = await findsale(result?.data?.body?.clientReference);
     if (!sale) {
       return res
         .status(httpStatus.NOT_FOUND)

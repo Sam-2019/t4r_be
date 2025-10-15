@@ -7,7 +7,7 @@ import {
   paymentProvider,
 } from "@/config/constants";
 import { fetchRequest, modSaleRecord } from "../utils";
-import { queryReferenceSchema } from "@/services/validators";
+import { referenceSchema } from "@/services/validators";
 import type { Request, Response, NextFunction } from "express";
 import { addCallback } from "@/services/db/repository/callback";
 import { addsale, findsale } from "@/services/db/repository/sale";
@@ -64,7 +64,7 @@ export const getStatus = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const result = queryReferenceSchema.safeParse(req);
+  const result = referenceSchema.safeParse(req);
   if (!result.success) {
     return res
       .status(httpStatus.BAD_REQUEST)
@@ -72,7 +72,7 @@ export const getStatus = async (
   }
 
   try {
-    const response = await fetchRequest(result.data.query.clientReference);
+    const response = await fetchRequest(result?.data?.body?.clientReference);
     if (!response.ok) {
       return res
         .status(httpStatus.BAD_REQUEST)

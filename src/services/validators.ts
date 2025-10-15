@@ -99,14 +99,14 @@ const authorizationSchema = z.object({
   }),
 });
 
-const queryReferenceSchema = z.object({
-  query: z.object({
+const referenceSchema = z.object({
+  body: z.object({
     clientReference: z.string().trim().nonempty(),
   }),
 });
 
 const queryNumberSchema = z.object({
-  query: z.object({
+  body: z.object({
     number: z.string().trim().nonempty(),
   }),
 });
@@ -118,8 +118,8 @@ export {
   vehicleSchema,
   requestIdSchema,
   vehicleIdSchema,
+  referenceSchema,
   requestorSchema,
   queryNumberSchema,
   authorizationSchema,
-  queryReferenceSchema,
 };

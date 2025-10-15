@@ -5,8 +5,8 @@ import {
   getrequestbyref,
 } from "@/services/db/repository/request";
 import type { Request, Response, NextFunction } from "express";
+import { referenceSchema, requestSchema } from "@/services/validators";
 import { httpStatus, notFound, requestAdded } from "@/config/constants";
-import { queryReferenceSchema, requestSchema } from "@/services/validators";
 
 // create request
 export const createRequest = async (
@@ -55,7 +55,7 @@ export const getRequest = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const result = queryReferenceSchema.safeParse(req);
+  const result = referenceSchema.safeParse(req);
   if (!result.success) {
     return res
       .status(httpStatus.BAD_REQUEST)
@@ -63,7 +63,7 @@ export const getRequest = async (
   }
 
   try {
-    const request = await getrequest(result.data.query.clientReference);
+    const request = await getrequest(result?.data?.body?.clientReference);
     if (!request) {
       return res
         .status(httpStatus.NOT_FOUND)
@@ -82,7 +82,7 @@ export const getRequestByRef = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const result = queryReferenceSchema.safeParse(req);
+  const result = referenceSchema.safeParse(req);
 
   if (!result.success) {
     return res
@@ -91,7 +91,7 @@ export const getRequestByRef = async (
   }
 
   try {
-    const request = await getrequestbyref(result.data.query.clientReference);
+    const request = await getrequestbyref(result?.data?.body?.clientReference);
     if (!request) {
       return res
         .status(httpStatus.NOT_FOUND)

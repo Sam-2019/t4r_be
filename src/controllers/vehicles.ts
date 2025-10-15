@@ -63,7 +63,7 @@ export const getVehicle = async (
   }
 
   try {
-    const vehicle = await findvehicle(result?.data?.query?.number);
+    const vehicle = await findvehicle(result?.data?.body?.number);
     if (!vehicle) {
       return res
         .status(httpStatus.NOT_FOUND)
