@@ -17,6 +17,7 @@ const unauthorized = "Unauthorized";
 const serverDown = "server is down";
 const vehicleAdded = "Vehicle added";
 const requestAdded = "Request added";
+const searchAdded = "Search added";
 const authorization = "authorization";
 const emailExists = "Email already exist";
 const emptyRequest = "Received with no data";
@@ -44,13 +45,14 @@ export {
   assetPath,
   forbidden,
   saleAdded,
-  successful,
   duplicate,
+  successful,
   production,
   httpStatus,
+  serverDown,
   companyName,
   emailExists,
-  serverDown,
+  searchAdded,
   development,
   vehicleAdded,
   emptyRequest,
