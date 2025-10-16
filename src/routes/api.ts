@@ -1,5 +1,6 @@
 import express from "express";
 import { saleRouter } from "./sale";
+import { searchRouter } from "./search";
 import { vehicleRouter } from "./vehicle";
 import { requestRouter } from "./request";
 import { paymentRouter } from "./payment";
@@ -17,8 +18,9 @@ apiRouter.use(
   }),
 );
 apiRouter.use(saleRouter);
+apiRouter.use(searchRouter);
 apiRouter.use(vehicleRouter);
 apiRouter.use(requestRouter);
-apiRouter.use(paymentRouter)
+apiRouter.use(paymentRouter);
 
 export default apiRouter;
