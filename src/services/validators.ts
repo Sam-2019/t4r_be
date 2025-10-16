@@ -106,6 +106,45 @@ const vehicleIdSchema = z.object({
   }),
 });
 
+const rangeSchema = z
+  .array(z.number())
+  .length(2, "Must be an array of exactly two numbers [min, max]");
+
+const searchSchema = z.object({
+  // Vehicle Details
+  vehicleType: z.string().min(1).trim(),
+  brand: z.string().min(1).trim(),
+  specification: z.string().trim().optional(),
+  configuration: z.string().trim().optional(),
+  suspensionType: z.string().trim().optional(),
+  emissionStandard: z.string().trim().optional(), // Keeping it as string per your JSON example
+
+  // Numerical Ranges (Validated as arrays of two numbers)
+  price: rangeSchema,
+  mileage: rangeSchema,
+  matriculationYear: rangeSchema,
+
+  reference: z.string().trim().optional(),
+
+  // Contact Information
+  firstName: z.string().min(1, "First name is required").trim(),
+  lastName: z.string().min(1, "Last name is required").trim(),
+  email: z.email("Invalid email format").trim().toLowerCase(),
+  phoneNumber: z.string().trim().optional(),
+  companyName: z.string().trim().optional(),
+
+  // Contact Preferences
+  contactPhone: z.boolean().default(false),
+  contactWhatsapp: z.boolean().default(false),
+  contactEmail: z.boolean().default(false),
+});
+
+const searchReferenceSchema = z.object({
+  body: z.object({
+    reference: z.string().trim().nonempty(),
+  }),
+});
+
 const authorizationSchema = z.object({
   headers: z.object({
     authorization: z.string().trim().nonempty(),
@@ -127,6 +166,7 @@ const queryNumberSchema = z.object({
 export {
   saleSchema,
   saleIdSchema,
+  searchSchema,
   requestSchema,
   vehicleSchema,
   requestIdSchema,
@@ -135,4 +175,5 @@ export {
   requestorSchema,
   queryNumberSchema,
   authorizationSchema,
+  searchReferenceSchema,
 };
