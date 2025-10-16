@@ -10,16 +10,8 @@ const getrequest = async (clientReference: string) => {
   }).lean();
 };
 
-const getrequestbyref = async (clientReference: string) => {
-  return await Request.findOne({
-    clientReference: clientReference,
-  })
-    .sort({ $natural: -1 })
-    .lean();
-};
-
 const addrequest = async (data: any) => {
   return await Request.create(data);
 };
 
-export { getrequests, getrequest, addrequest, getrequestbyref };
+export { getrequests, getrequest, addrequest };

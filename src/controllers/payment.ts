@@ -8,10 +8,10 @@ import {
 } from "@/config/constants";
 import { fetchRequest, modSaleRecord } from "../utils";
 import { referenceSchema } from "@/services/validators";
+import { getrequest } from "@/services/db/repository/request";
 import type { Request, Response, NextFunction } from "express";
 import { addCallback } from "@/services/db/repository/callback";
 import { addsale, findsale } from "@/services/db/repository/sale";
-import { getrequestbyref } from "@/services/db/repository/request";
 
 // provider callback route
 export const callback = async (
@@ -38,7 +38,7 @@ export const callback = async (
   const clientReference = responseData?.ClientReference;
   try {
     await addCallback(logCallback);
-    const requestByRef = await getrequestbyref(clientReference);
+    const requestByRef = await getrequest(clientReference);
     if (!requestByRef) {
       return res.status(httpStatus.NOT_FOUND).json({ message: notFound });
     }

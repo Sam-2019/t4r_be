@@ -2,7 +2,6 @@ import {
   addrequest,
   getrequest,
   getrequests,
-  getrequestbyref,
 } from "@/services/db/repository/request";
 import type { Request, Response, NextFunction } from "express";
 import { referenceSchema, requestSchema } from "@/services/validators";
@@ -64,34 +63,6 @@ export const getRequest = async (
 
   try {
     const request = await getrequest(result?.data?.body?.clientReference);
-    if (!request) {
-      return res
-        .status(httpStatus.NOT_FOUND)
-        .json({ message: notFound, data: null });
-    }
-
-    res.status(httpStatus.OK).json({ data: request });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// get request by reference
-export const getRequestByRef = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const result = referenceSchema.safeParse(req);
-
-  if (!result.success) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: result?.error?.issues[0]?.message });
-  }
-
-  try {
-    const request = await getrequestbyref(result?.data?.body?.clientReference);
     if (!request) {
       return res
         .status(httpStatus.NOT_FOUND)
