@@ -6,4 +6,4 @@ const router = express.Router();
 router.post("/payment/callback", callback);
 router.post("/payment/status", authMiddleware, getStatus);
 
-export { router as vehicleRouter };
+export { router as paymentRouter };

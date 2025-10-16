@@ -25,8 +25,8 @@ export const callback = async (
   }
 
   const logCallback = { provider: paymentProvider, response: results };
-  const responseCode = results.ResponseCode;
-  const message = results.Message;
+  const responseCode = results?.ResponseCode;
+  const message = results?.Message;
 
   if (message !== success) {
     return res
@@ -34,8 +34,8 @@ export const callback = async (
       .json({ message: `Payment callback with status: ${responseCode}` });
   }
 
-  const responseData = results.Data;
-  const clientReference = responseData.ClientReference;
+  const responseData = results?.Data;
+  const clientReference = responseData?.ClientReference;
   try {
     await addCallback(logCallback);
     const requestByRef = await getrequestbyref(clientReference);
@@ -50,8 +50,8 @@ export const callback = async (
         .json({ message: duplicate, data: sale });
     }
 
-    const modData = modSaleRecord({ requestByRef, results });
-    await addsale(modData);
+    const record = modSaleRecord({ requestByRef, results });
+    await addsale(record);
     res.status(httpStatus.CREATED).json({ message: success });
   } catch (error) {
     next(error);

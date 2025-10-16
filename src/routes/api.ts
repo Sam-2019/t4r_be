@@ -2,6 +2,7 @@ import express from "express";
 import { saleRouter } from "./sale";
 import { vehicleRouter } from "./vehicle";
 import { requestRouter } from "./request";
+import { paymentRouter } from "./payment";
 import { document } from "@/services/openapi/document";
 import { apiReference } from "@scalar/express-api-reference";
 
@@ -18,5 +19,6 @@ apiRouter.use(
 apiRouter.use(saleRouter);
 apiRouter.use(vehicleRouter);
 apiRouter.use(requestRouter);
+apiRouter.use(paymentRouter)
 
 export default apiRouter;
