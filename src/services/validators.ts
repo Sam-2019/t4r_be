@@ -46,9 +46,9 @@ const requestSchema = z.object({
   subIndustry: z.string().trim().nonempty(),
   requestor: requestorSchema,
   pickup: z.string().trim().nonempty(),
-  destination: z.string().trim().nonempty(),
-  materialType: z.string().trim().nonempty(),
-  description: z.string().trim().nonempty(),
+  destination: z.string().trim().optional(),
+  materialType: z.string().trim().optional(),
+  description: z.string().trim().optional(),
   amount: z.number(),
   clientReference: z.string().trim().nonempty(),
 });
