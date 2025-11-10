@@ -10,12 +10,12 @@ const app = express();
 app.use(
   cors({
     origin: "*",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
   }),
 );
 
 ping();
-connectDB();
+await connectDB();
 app.use(json());
 app.use("/", router);
 
