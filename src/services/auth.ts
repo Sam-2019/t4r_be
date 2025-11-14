@@ -68,7 +68,7 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
   },
-  trustedOrigins: ["http://localhost:5173"],
+  trustedOrigins: [String(config.auth.origin)],
   telemetry: {
     enabled: true,
   },

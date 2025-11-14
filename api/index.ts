@@ -18,7 +18,7 @@ app.use(
   }),
 );
 
-// ping();
+ping();
 await connectDB();
 app.all("/api/auth/{*any}", toNodeHandler(auth));
 
