@@ -1,12 +1,8 @@
 import express from "express";
 import { authMiddleware } from "@/middlewares/auth";
-import { createRequest, getRequest, getRequests } from "@/controllers/requests";
+import { createRequest } from "@/controllers/requests";
 
 const router = express.Router();
-router.get("/requests", authMiddleware, getRequests);
-router
-  .route("/request")
-  .get(authMiddleware, getRequest)
-  .post(authMiddleware, createRequest);
+router.route("/request").post(authMiddleware, createRequest);
 
 export { router as requestRouter };

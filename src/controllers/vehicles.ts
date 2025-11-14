@@ -1,33 +1,7 @@
-import {
-  addvehicle,
-  getvehicles,
-  findvehicle,
-} from "@/services/db/repository/vehicle";
+import { getvehicles, findvehicle } from "@/services/db/repository/vehicle";
 import type { Request, Response, NextFunction } from "express";
-import { httpStatus, notFound, vehicleAdded } from "@/config/constants";
-import { queryNumberSchema, vehicleSchema } from "@/services/validators";
-
-// create vehicle
-export const createVehicle = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const result = vehicleSchema.safeParse(req.body);
-
-  if (!result.success) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: result.error.issues[0]?.message });
-  }
-
-  try {
-    await addvehicle(result.data);
-    res.status(httpStatus.CREATED).json({ message: vehicleAdded });
-  } catch (error) {
-    next(error);
-  }
-};
+import { httpStatus, notFound } from "@/config/constants";
+import { queryNumberSchema } from "@/services/validators";
 
 // get vehicles
 export const getVehicles = async (

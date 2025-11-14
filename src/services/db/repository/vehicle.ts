@@ -14,4 +14,40 @@ const addvehicle = async (data: any) => {
   return await Vehicle.create(data);
 };
 
-export { getvehicles, findvehicle, addvehicle };
+const updatevehicle = async (data: any) => {
+  const filter = { number: data.number };
+  return await Vehicle.findOneAndUpdate(filter, data, {
+    new: true,
+  });
+};
+
+const deletevehicle = async (data: any) => {
+  console.log({ data });
+  return await Vehicle.deleteOne({ number: data });
+};
+
+const getuservehicles = async (data: any) => {
+  if (data.role === "user")
+    return await Vehicle.find({ userId: data.id }).lean();
+
+  return await Vehicle.find({}).lean();
+};
+
+const totalVehiclesBooked = async (data: any) => {
+  return await Vehicle.find({ isBooked: true }).countDocuments();
+};
+
+const totalVehicles = async (data: any) => {
+  return await Vehicle.estimatedDocumentCount();
+};
+
+export {
+  addvehicle,
+  getvehicles,
+  findvehicle,
+  deletevehicle,
+  updatevehicle,
+  getuservehicles,
+  totalVehicles,
+  totalVehiclesBooked,
+};

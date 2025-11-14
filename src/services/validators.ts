@@ -13,6 +13,32 @@ const requestorSchema = z.object({
   email: z.string().trim().nonempty(),
 });
 
+const transactionSchema = z.object({
+  vehicleId: z.string().trim().nonempty(),
+  type: z.string().trim().nonempty(),
+  industry: z.string().trim().nonempty(),
+  subIndustry: z.string().trim().nonempty(),
+  requestor: requestorSchema,
+  pickup: z.string().trim().nonempty(),
+  destination: z.string().trim().nonempty(),
+  materialType: z.string().trim().nonempty(),
+  description: z.string().trim().nonempty(),
+  amount: z.number(),
+  provider: z.string().trim().nonempty(),
+  providerResponse: z.object({}),
+  purchaseInfo: purchaseInfoSchema,
+  transactionId: z.string().trim().nonempty(),
+  externalTransactionId: z.string().trim().nonempty(),
+});
+
+const transactionIdSchema = z.object({
+  id: z.number().meta({
+    id: "trnasactionId",
+    example: "1",
+    description: "Unique transaction identifier",
+  }),
+});
+
 const saleSchema = z.object({
   vehicleId: z.string().trim().nonempty(),
   type: z.string().trim().nonempty(),
@@ -41,6 +67,7 @@ const saleIdSchema = z.object({
 
 const requestSchema = z.object({
   vehicleId: z.string().trim().nonempty(),
+  userId: z.string().trim().nonempty(),
   type: z.string().trim().nonempty(),
   industry: z.string().trim().nonempty(),
   subIndustry: z.string().trim().nonempty(),
@@ -63,12 +90,8 @@ const requestIdSchema = z.object({
 
 const vehicleImageSchema = z
   .object({
-    id: z.number().nonoptional(),
-    source: z.string().trim().nonempty(),
-    original: z.string().trim().nonempty(),
-    thumbnail: z.string().trim().nonempty(),
-    originalClass: z.string().trim().nonempty(),
-    thumbnailClass: z.string().trim().nonempty(),
+    id: z.string().nonoptional(),
+    url: z.string().trim().nonempty(),
   })
   .meta({
     id: "vehicleImage",
@@ -78,6 +101,7 @@ const vehicleImageSchema = z
   });
 
 const vehicleSchema = z.object({
+  userId: z.string().trim().nonempty(),
   regId: z.string().trim().nonempty(),
   new: z.boolean().nonoptional(),
   name: z.string().trim().nonempty(),
@@ -85,7 +109,7 @@ const vehicleSchema = z.object({
   number: z.string().trim().nonempty(),
   mileage: z.string().trim().optional(),
   gearbox: z.string().trim().optional(),
-  price: z.string().trim().nonempty(),
+  price: z.number().nonoptional(),
   matriculationYear: z.string().trim().optional(),
   currency: z.string().trim(),
   taxInclusive: z.boolean(),
@@ -94,7 +118,7 @@ const vehicleSchema = z.object({
   suspensionType: z.string().trim().optional(),
   type: z.string().trim().nonempty(),
   currencySuffix: z.string().trim().nonempty(),
-  url: z.string().trim().nonempty(),
+  isBooked: z.boolean(),
   images: z.array(vehicleImageSchema),
 });
 
@@ -163,6 +187,12 @@ const queryNumberSchema = z.object({
   }),
 });
 
+const userProfileSchema = z.object({
+  body: z.object({
+    userId: z.string().trim().nonempty(),
+  }),
+});
+
 export {
   saleSchema,
   saleIdSchema,
@@ -176,4 +206,7 @@ export {
   queryNumberSchema,
   authorizationSchema,
   searchReferenceSchema,
+  userProfileSchema,
+  transactionIdSchema,
+  transactionSchema,
 };

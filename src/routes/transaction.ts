@@ -1,8 +1,8 @@
 import express from "express";
 import { authMiddleware } from "@/middlewares/auth";
-import { createSale } from "@/controllers/sales";
+import { createTransaction } from "@/controllers/transactions";
 
 const router = express.Router();
-router.route("/sale").post(authMiddleware, createSale);
+router.route("/trnasaction").post(authMiddleware, createTransaction);
 
 export { router as saleRouter };

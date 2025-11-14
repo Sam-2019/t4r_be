@@ -3,11 +3,7 @@ import { requestorSchema } from "../../validators";
 
 const dataSchema = new Schema(
   {
-    vehicleId: {
-      type: Schema.Types.UUID,
-      ref: "Vehicle",
-      required: true,
-    },
+    vehicleId: { type: Schema.Types.ObjectId, ref: "Vehicle", required: true },
     type: {
       type: String,
       required: true,

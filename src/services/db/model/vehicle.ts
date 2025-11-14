@@ -1,6 +1,16 @@
 import { model, Schema } from "mongoose";
 
 const imageSchema = new Schema({
+  id: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  url: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   source: {
     type: String,
     required: true,
@@ -30,7 +40,8 @@ const imageSchema = new Schema({
 
 const dataSchema = new Schema(
   {
-    regId: { type: Schema.Types.UUID, required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
+    regId: { type: String, required: true },
     new: {
       type: Boolean,
       required: true,
@@ -103,6 +114,10 @@ const dataSchema = new Schema(
       type: String,
       required: true,
       trim: true,
+    },
+    isBooked: {
+      type: Boolean,
+      default: false,
     },
     images: [imageSchema],
   },

@@ -25,6 +25,7 @@
   "dependencies": {
     "@scalar/express-api-reference": "^0.8.21",
     "@zodyac/zod-mongoose": "^4.2.0",
+    "better-auth": "^1.3.34",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",

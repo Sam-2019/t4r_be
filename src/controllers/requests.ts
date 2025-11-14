@@ -13,6 +13,7 @@ export const createRequest = async (
   res: Response,
   next: NextFunction,
 ) => {
+  console.log({ body: req.body });
   const result = requestSchema.safeParse(req.body);
 
   if (!result.success) {
@@ -36,7 +37,7 @@ export const getRequests = async (
   next: NextFunction,
 ) => {
   try {
-    const requests = await getrequests();
+    const requests = await getrequests(1);
     if (!requests || requests.length === 0) {
       return res
         .status(httpStatus.NOT_FOUND)

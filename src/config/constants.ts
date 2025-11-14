@@ -16,6 +16,8 @@ const companyName = "Trucks4Rental";
 const unauthorized = "Unauthorized";
 const serverDown = "server is down";
 const vehicleAdded = "Vehicle added";
+const vehicleUpdated = "Vehicle updated";
+const vehicleDeleted = "Vehicle deleted";
 const requestAdded = "Request added";
 const searchAdded = "Search added";
 const authorization = "authorization";
@@ -61,4 +63,6 @@ export {
   authorization,
   paymentProvider,
   internalServerError,
+  vehicleUpdated,
+  vehicleDeleted,
 };

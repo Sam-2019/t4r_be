@@ -23,6 +23,9 @@ const config = {
     token: process.env.BASIC_AUTH,
     url: process.env.TRANSACTION_STATUS_CHECK_URL,
   },
+  auth: {
+    origin: process.env.ORIGIN,
+  },
 };
 
 export { config };
