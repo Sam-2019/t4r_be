@@ -8,8 +8,13 @@ dbConn.on("connected", () => {
 });
 
 const connectDB = async () => {
+  const uri = config?.database?.uri;
+  if (!uri) {
+    throw new Error("Database URI is not defined");
+  }
+
   await mongoose
-    .connect(config?.database?.uri, {
+    .connect(uri, {
       dbName: config.database.name,
     })
     .catch((error) => handleDBError(error));
