@@ -29,12 +29,12 @@ export const profileData = async (
   });
   const user = session?.user;
 
-  if (!user) {
-    return res.status(httpStatus.FORBIDDEN).json({
-      message: "Invalid user",
-      data: {},
-    });
-  }
+  // if (!user) {
+  //   return res.status(httpStatus.FORBIDDEN).json({
+  //     message: "Invalid user",
+  //     data: {},
+  //   });
+  // }
 
   try {
     const totalsales = await totalSale(user);
