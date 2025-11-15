@@ -15,7 +15,7 @@ const addrequest = async (data: any) => {
 };
 
 const getuserrequests = async (data: any) => {
-  if (data.role === "user")
+  if (data?.role === "user")
     return await Request.find({ userId: data.id }).lean();
 
   return await Request.find({}).lean();
