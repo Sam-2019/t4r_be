@@ -10,9 +10,9 @@ import mongoose from "mongoose";
 declare global {
   var _mongooseConnection:
     | {
-        conn: typeof mongoose | null;
-        promise: Promise<typeof mongoose> | null;
-      }
+      conn: typeof mongoose | null;
+      promise: Promise<typeof mongoose> | null;
+    }
     | undefined;
 }
 
@@ -68,6 +68,17 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
   },
+advanced: {
+  crossSubDomainCookies: {
+    enabled: true,
+    domain: config.auth.origin,
+  },
+  defaultCookieAttributes: {
+    sameSite: 'none',
+    secure: true,
+    httpOnly: true,
+  },
+},
   trustedOrigins: [String(config.auth.origin)],
   telemetry: {
     enabled: true,
@@ -101,6 +112,7 @@ export const auth = betterAuth({
       enabled: true, // Enable caching session in cookie (default: `false`)
       maxAge: 3000, // 5 minutes
     },
+
   },
   user: {
     modelName: "users",
