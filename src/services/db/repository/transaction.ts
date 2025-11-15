@@ -1,7 +1,7 @@
 import Transaction from "@/db/model/transaction";
 
 const gettransactions = async (data: any) => {
-  if (data.role === "user")
+  if (data?.role === "user")
     return await Transaction.find({ userId: data.id }).lean();
   return await Transaction.find({}).lean();
 };
@@ -44,7 +44,7 @@ const totalTransaction = async (user: any) => {
 };
 
 const getusertransactions = async (data: any) => {
-  if (data.role === "user")
+  if (data?.role === "user")
     return await Transaction.find({ userId: data.id }).lean();
 
   return await Transaction.find({}).lean();
