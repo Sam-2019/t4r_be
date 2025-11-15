@@ -1,7 +1,7 @@
 import Sale from "@/db/model/sale";
 
 const getsales = async (data: any) => {
-  if (data.role === "user") return await Sale.find({ userId: data.id }).lean();
+  if (data?.role === "user") return await Sale.find({ userId: data.id }).lean();
   return await Sale.find({}).lean();
 };
 
@@ -48,7 +48,7 @@ const totalSale = async (user: any) => {
 };
 
 const getusersales = async (data: any) => {
-  if (data.role === "user") return await Sale.find({ userId: data.id }).lean();
+  if (data?.role === "user") return await Sale.find({ userId: data.id }).lean();
 
   return await Sale.find({}).lean();
 };
