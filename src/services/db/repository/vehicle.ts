@@ -27,7 +27,7 @@ const deletevehicle = async (data: any) => {
 };
 
 const getuservehicles = async (data: any) => {
-  if (data.role === "user")
+  if (data?.role === "user")
     return await Vehicle.find({ userId: data.id }).lean();
 
   return await Vehicle.find({}).lean();
