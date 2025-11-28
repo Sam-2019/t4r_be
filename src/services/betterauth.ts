@@ -77,13 +77,13 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
   },
-  // advanced: {
-  //   defaultCookieAttributes: {
-  //     sameSite: "none",
-  //     secure: true,
-  //     partitioned: true
-  //   }
-  // },
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+      partitioned: true
+    }
+  },
   trustedOrigins: [String(config.auth.origin)],
   telemetry: {
     enabled: false,
