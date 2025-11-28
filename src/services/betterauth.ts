@@ -86,7 +86,7 @@ export const auth = betterAuth({
   // },
   trustedOrigins: [String(config.auth.origin)],
   telemetry: {
-    enabled: true,
+    enabled: false,
   },
   logger: {
     disabled: false,
