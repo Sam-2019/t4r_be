@@ -45,7 +45,7 @@ const totalSale = async (data: any) => {
       $group: {
         _id: "amount",
         value: { $sum: "$amount" },
-        count: { $sum: 1 }
+        count: { $sum: 1 },
       },
     },
     {

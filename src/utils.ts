@@ -43,3 +43,8 @@ export const modSaleRecord = ({
     externalTransactionId: dataPayload?.ExternalTransactionId,
   };
 };
+
+export const utilizationmod = (utilization: any) => {
+  if (utilization === "NaN") return 0;
+  return utilization;
+};

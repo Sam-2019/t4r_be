@@ -13,6 +13,7 @@ import {
   totalVehiclesBooked,
   totalVehiclesAddedToday,
 } from "@/db/repository/vehicle";
+import { utilizationmod } from "../utils";
 import { auth } from "@/services/betterauth";
 import { fromNodeHeaders } from "better-auth/node";
 import { getsearches } from "@/db/repository/search";
@@ -53,7 +54,7 @@ export const profile = async (
     const registrations = await getregistrations(user);
     const users = await getpersons(user);
     const search = await getsearches();
-    const utilizationmod = ((bookedvehicles / totalvehicles) * 100).toFixed(0)
+    const utilization = ((bookedvehicles / totalvehicles) * 100).toFixed(0);
 
     res.status(httpStatus.OK).json({
       data: {
@@ -66,7 +67,7 @@ export const profile = async (
             total: totalvehicles || 0,
             active: bookedvehicles || 0,
             addedToday: addedToday || 0,
-            utilization: utilizationmod
+            utilization: utilizationmod(utilization),
           },
         },
         vehicles: vehicles,
