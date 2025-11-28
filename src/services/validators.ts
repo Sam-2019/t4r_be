@@ -14,21 +14,20 @@ const requestorSchema = z.object({
 });
 
 const transactionSchema = z.object({
-  vehicleId: z.string().trim().nonempty(),
+  vehicle: z.string().trim().nonempty(),
+  user: z.string().trim().nonempty(),
   type: z.string().trim().nonempty(),
-  industry: z.string().trim().nonempty(),
-  subIndustry: z.string().trim().nonempty(),
+  industry: z.string().trim(),
+  subIndustry: z.string().trim(),
   requestor: requestorSchema,
   pickup: z.string().trim().nonempty(),
   destination: z.string().trim().nonempty(),
-  materialType: z.string().trim().nonempty(),
-  description: z.string().trim().nonempty(),
+  materialType: z.string().trim().optional(),
+  description: z.string().trim().optional(),
   amount: z.number(),
   provider: z.string().trim().nonempty(),
-  providerResponse: z.object({}),
+  clientReference: z.string().trim().nonempty(),
   purchaseInfo: purchaseInfoSchema,
-  transactionId: z.string().trim().nonempty(),
-  externalTransactionId: z.string().trim().nonempty(),
 });
 
 const transactionIdSchema = z.object({
@@ -40,19 +39,21 @@ const transactionIdSchema = z.object({
 });
 
 const saleSchema = z.object({
-  vehicleId: z.string().trim().nonempty(),
+  vehicle: z.string().trim().nonempty(),
+  user: z.string().trim().nonempty(),
   type: z.string().trim().nonempty(),
   industry: z.string().trim().nonempty(),
   subIndustry: z.string().trim().nonempty(),
   requestor: requestorSchema,
   pickup: z.string().trim().nonempty(),
   destination: z.string().trim().nonempty(),
-  materialType: z.string().trim().nonempty(),
-  description: z.string().trim().nonempty(),
+  materialType: z.string().trim().optional(),
+  description: z.string().trim().optional(),
   amount: z.number(),
   provider: z.string().trim().nonempty(),
   providerResponse: z.object({}),
   purchaseInfo: purchaseInfoSchema,
+  clientReference: z.string().trim().nonempty(),
   transactionId: z.string().trim().nonempty(),
   externalTransactionId: z.string().trim().nonempty(),
 });
@@ -65,19 +66,18 @@ const saleIdSchema = z.object({
   }),
 });
 
-const requestSchema = z.object({
-  vehicleId: z.string().trim().nonempty(),
-  userId: z.string().trim().nonempty(),
+const regisrationSchema = z.object({
+  vehicle: z.string().trim().nonempty(),
+  user: z.string().trim().nonempty(),
   type: z.string().trim().nonempty(),
   industry: z.string().trim().nonempty(),
-  subIndustry: z.string().trim().nonempty(),
+  subIndustry: z.string().trim(),
   requestor: requestorSchema,
   pickup: z.string().trim().nonempty(),
   destination: z.string().trim().optional(),
   materialType: z.string().trim().optional(),
   description: z.string().trim().optional(),
   amount: z.number(),
-  clientReference: z.string().trim().nonempty(),
 });
 
 const requestIdSchema = z.object({
@@ -101,7 +101,7 @@ const vehicleImageSchema = z
   });
 
 const vehicleSchema = z.object({
-  userId: z.string().trim().nonempty(),
+  user: z.string().trim().nonempty(),
   regId: z.string().trim().nonempty(),
   new: z.boolean().nonoptional(),
   name: z.string().trim().nonempty(),
@@ -161,6 +161,8 @@ const searchSchema = z.object({
   contactPhone: z.boolean().default(false),
   contactWhatsapp: z.boolean().default(false),
   contactEmail: z.boolean().default(false),
+
+  status: z.string().trim().toLowerCase().optional(),
 });
 
 const searchReferenceSchema = z.object({
@@ -189,7 +191,26 @@ const queryNumberSchema = z.object({
 
 const userProfileSchema = z.object({
   body: z.object({
-    userId: z.string().trim().nonempty(),
+    user: z.string().trim().nonempty(),
+  }),
+});
+
+const callbackSchema = z.object({
+  body: z.object({
+    ResponseCode: z.string(),
+    Message: z.string(),
+    Data: z.object({
+      Amount: z.number(),
+      Charges: z.number(),
+      AmountAfterCharges: z.number(),
+      Description: z.string(),
+      ClientReference: z.string(),
+      TransactionId: z.string(),
+      ExternalTransactionId: z.string(),
+      AmountCharged: z.number(),
+      OrderId: z.string().min(1),
+      PaymentDate: z.string(),
+    }),
   }),
 });
 
@@ -197,16 +218,17 @@ export {
   saleSchema,
   saleIdSchema,
   searchSchema,
-  requestSchema,
+  regisrationSchema,
   vehicleSchema,
+  callbackSchema,
   requestIdSchema,
   vehicleIdSchema,
   referenceSchema,
   requestorSchema,
-  queryNumberSchema,
-  authorizationSchema,
-  searchReferenceSchema,
-  userProfileSchema,
-  transactionIdSchema,
   transactionSchema,
+  queryNumberSchema,
+  userProfileSchema,
+  authorizationSchema,
+  transactionIdSchema,
+  searchReferenceSchema,
 };

@@ -5,4 +5,4 @@ import { createTransaction } from "@/controllers/transactions";
 const router = express.Router();
 router.route("/transaction").post(authMiddleware, createTransaction);
 
-export { router as saleRouter };
+export { router as transactionRouter };

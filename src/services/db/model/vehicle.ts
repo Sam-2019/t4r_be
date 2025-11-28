@@ -40,7 +40,11 @@ const imageSchema = new Schema({
 
 const dataSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User" },
+    user: { type: Schema.Types.ObjectId, required: true },
+    sales: [{ type: Schema.Types.ObjectId, ref: "Sale" }],
+    person: { type: Schema.Types.ObjectId, ref: "Person" },
+    registrations: [{ type: Schema.Types.ObjectId, ref: "Registration" }],
+    transactions: [{ type: Schema.Types.ObjectId, ref: "Transaction" }],
     regId: { type: String, required: true },
     new: {
       type: Boolean,

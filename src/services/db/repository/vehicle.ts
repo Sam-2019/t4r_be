@@ -22,23 +22,31 @@ const updatevehicle = async (data: any) => {
 };
 
 const deletevehicle = async (data: any) => {
-  console.log({ data });
   return await Vehicle.deleteOne({ number: data });
 };
 
 const getuservehicles = async (data: any) => {
-  if (data?.role === "user")
-    return await Vehicle.find({ userId: data.id }).lean();
-
-  return await Vehicle.find({}).lean();
+  if (data?.admin) return await Vehicle.find({}).lean();
+  return await Vehicle.find({ user: data?.id }).lean();
 };
 
 const totalVehiclesBooked = async (data: any) => {
-  return await Vehicle.find({ isBooked: true }).countDocuments();
+  if (data?.admin)
+    return await Vehicle.find({ isBooked: true }).countDocuments();
+  return (await Vehicle.find({ user: data?.id, isBooked: true })).length;
 };
 
 const totalVehicles = async (data: any) => {
-  return await Vehicle.estimatedDocumentCount();
+  if (data?.admin) return await Vehicle.estimatedDocumentCount();
+  return (await Vehicle.find({ user: data?.id })).length;
+};
+
+const totalVehiclesAddedToday = async (data: any) => {
+  if (data?.admin)
+    return (await Vehicle.find({ createdAt: { $in: [Date.now()] } })).length;
+  return (
+    await Vehicle.find({ user: data?.id, createdAt: { $in: [Date.now()] } })
+  ).length;
 };
 
 export {
@@ -50,4 +58,5 @@ export {
   getuservehicles,
   totalVehicles,
   totalVehiclesBooked,
+  totalVehiclesAddedToday,
 };

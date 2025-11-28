@@ -12,17 +12,17 @@ const serverUp = "server is up";
 const __dirname = path.resolve();
 const paymentProvider = "hubtel";
 const development = "development";
+const searchAdded = "Search added";
 const companyName = "Trucks4Rental";
 const unauthorized = "Unauthorized";
 const serverDown = "server is down";
 const vehicleAdded = "Vehicle added";
+const authorization = "authorization";
 const vehicleUpdated = "Vehicle updated";
 const vehicleDeleted = "Vehicle deleted";
-const requestAdded = "Request added";
-const searchAdded = "Search added";
-const authorization = "authorization";
 const emailExists = "Email already exist";
 const emptyRequest = "Received with no data";
+const registrationAdded = "Registration added";
 const internalServerError = "Internal Server Error";
 
 const httpStatus = {
@@ -58,11 +58,11 @@ export {
   development,
   vehicleAdded,
   emptyRequest,
-  requestAdded,
   unauthorized,
   authorization,
-  paymentProvider,
-  internalServerError,
   vehicleUpdated,
   vehicleDeleted,
+  paymentProvider,
+  registrationAdded,
+  internalServerError,
 };

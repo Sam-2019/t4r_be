@@ -1,7 +1,8 @@
+import { addsale } from "@/db/repository/sale";
+import { saleSchema } from "@/services/validators";
+import { findperson } from "@/db/repository/person";
+import { httpStatus, saleAdded } from "@/config/constants";
 import type { Request, Response, NextFunction } from "express";
-import { referenceSchema, saleSchema } from "@/services/validators";
-import { httpStatus, notFound, saleAdded } from "@/config/constants";
-import { addsale, findsale, getsales } from "@/services/db/repository/sale";
 
 // create sale
 export const createSale = async (
@@ -12,60 +13,26 @@ export const createSale = async (
   const result = saleSchema.safeParse(req.body);
 
   if (!result.success) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: result?.error?.issues[0]?.message });
+    const errors = result?.error?.issues?.reduce(
+      (acc: Record<string, string>, err) => {
+        const key = err.path.join(".");
+        acc[key] = err.message;
+        return acc;
+      },
+      {},
+    );
+
+    return res.status(httpStatus.BAD_REQUEST).json({ message: errors });
   }
 
   try {
-    await addsale(result.data);
+    const person = await findperson(result.data.user);
+    const modData = {
+      ...result?.data,
+      person: person?._id,
+    };
+    await addsale(modData);
     res.status(httpStatus.CREATED).json({ message: saleAdded });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// get sales
-export const getSales = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const sales = await getsales(1);
-    if (!sales || sales.length === 0) {
-      return res
-        .status(httpStatus.NOT_FOUND)
-        .json({ message: notFound, data: [] });
-    }
-    res.status(httpStatus.OK).json({ data: sales });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// get sale
-export const getSale = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const result = referenceSchema.safeParse(req);
-  if (!result.success) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: result?.error?.issues[0]?.message });
-  }
-
-  try {
-    const sale = await findsale(result?.data?.body?.clientReference);
-    if (!sale) {
-      return res
-        .status(httpStatus.NOT_FOUND)
-        .json({ message: notFound, data: null });
-    }
-
-    res.status(httpStatus.OK).json({ data: sale });
   } catch (error) {
     next(error);
   }

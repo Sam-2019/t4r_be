@@ -1,14 +1,14 @@
-import express from "express";
 import {
-  createVehicle,
-  deleteVehicle,
-  profileData,
+  profile,
   updateVehicle,
+  deleteVehicle,
+  createVehicle,
 } from "@/controllers/profile";
+import express from "express";
 import { getVehicle } from "@/controllers/vehicles";
 
 const router = express.Router();
-router.get("/profile", profileData);
+router.get("/profile", profile);
 router
   .route("/profile/vehicle")
   .get(getVehicle)

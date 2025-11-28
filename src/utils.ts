@@ -28,17 +28,17 @@ export const fetchRequest = async (clientReference: string) => {
 };
 
 export const modSaleRecord = ({
-  requestByRef,
-  results,
+  transaction,
+  result,
 }: {
-  requestByRef: any;
-  results: any;
+  transaction: any;
+  result: any;
 }) => {
-  const dataPayload = results?.Data;
+  const dataPayload = result?.Data;
   return {
-    ...requestByRef,
+    ...transaction,
     provider: paymentProvider,
-    providerResponse: results,
+    providerResponse: result,
     transactionId: dataPayload?.TransactionId,
     externalTransactionId: dataPayload?.ExternalTransactionId,
   };

@@ -8,7 +8,11 @@ import {
 } from "./index";
 import { createDocument } from "zod-openapi";
 import { companyName } from "@/src/config/constants";
-import { authorizationSchema, saleSchema, vehicleSchema } from "../validators";
+import {
+  authorizationSchema,
+  saleSchema,
+  vehicleSchema,
+} from "@/services/validators";
 
 const document = createDocument({
   openapi: "3.1.0",

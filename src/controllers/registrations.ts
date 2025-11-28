@@ -1,16 +1,16 @@
 import { findperson } from "@/db/repository/person";
-import { transactionSchema } from "@/services/validators";
-import { httpStatus, saleAdded } from "@/config/constants";
+import { regisrationSchema } from "@/services/validators";
 import type { Request, Response, NextFunction } from "express";
-import { addtransaction } from "@/db/repository/transaction";
+import { httpStatus, registrationAdded } from "@/config/constants";
+import { addregistration } from "@/src/services/db/repository/registration";
 
-// create Transaction
-export const createTransaction = async (
+// create request
+export const createRegistration = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const result = transactionSchema.safeParse(req.body);
+  const result = regisrationSchema.safeParse(req.body);
 
   if (!result.success) {
     const errors = result?.error?.issues?.reduce(
@@ -21,6 +21,7 @@ export const createTransaction = async (
       },
       {},
     );
+
     return res.status(httpStatus.BAD_REQUEST).json({ message: errors });
   }
 
@@ -30,8 +31,8 @@ export const createTransaction = async (
       ...result?.data,
       person: person?._id,
     };
-    await addtransaction(modData);
-    res.status(httpStatus.CREATED).json({ message: saleAdded });
+    await addregistration(modData);
+    res.status(httpStatus.CREATED).json({ message: registrationAdded });
   } catch (error) {
     next(error);
   }

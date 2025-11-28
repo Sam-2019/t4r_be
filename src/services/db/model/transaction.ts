@@ -1,9 +1,19 @@
 import { model, Schema } from "mongoose";
-import { requestorSchema } from "../../validators";
+
+const requestorSchema = new Schema(
+  {
+    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, trim: true },
+    contact: { type: String, required: true, trim: true },
+  },
+  { _id: false },
+);
 
 const dataSchema = new Schema(
   {
-    vehicleId: { type: Schema.Types.ObjectId, ref: "Vehicle", required: true },
+    user: { type: Schema.Types.ObjectId, required: true },
+    person: { type: Schema.Types.ObjectId, ref: "Person" },
+    vehicle: { type: Schema.Types.ObjectId, ref: "Vehicle" },
     type: {
       type: String,
       required: true,
@@ -11,13 +21,13 @@ const dataSchema = new Schema(
     },
     industry: {
       type: String,
-      required: true,
       trim: true,
+      default: "Other",
     },
     subIndustry: {
       type: String,
-      required: true,
       trim: true,
+      default: "Other",
     },
     requestor: {
       type: requestorSchema,
@@ -51,11 +61,13 @@ const dataSchema = new Schema(
       required: true,
       trim: true,
     },
-    provider: { type: String, required: true, trim: true },
-    providerResponse: { type: Object, required: true, trim: true },
+    status: {
+      type: String,
+      required: true,
+      trim: true,
+      default: "pending",
+    },
     purchaseInfo: { type: Object, required: true, trim: true },
-    transactionId: { type: String, required: true, trim: true },
-    externalTransactionId: { type: String, required: true, trim: true },
   },
   {
     timestamps: true,
@@ -63,5 +75,4 @@ const dataSchema = new Schema(
 );
 
 const Transaction = model("Transaction", dataSchema);
-
 export default Transaction;

@@ -1,7 +1,7 @@
-import { getvehicles, findvehicle } from "@/services/db/repository/vehicle";
-import type { Request, Response, NextFunction } from "express";
-import { httpStatus, notFound } from "@/config/constants";
 import { queryNumberSchema } from "@/services/validators";
+import { httpStatus, notFound } from "@/config/constants";
+import type { Request, Response, NextFunction } from "express";
+import { getvehicles, findvehicle } from "@/db/repository/vehicle";
 
 // get vehicles
 export const getVehicles = async (
@@ -31,9 +31,16 @@ export const getVehicle = async (
 ) => {
   const result = queryNumberSchema.safeParse(req);
   if (!result.success) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: result?.error?.issues[0]?.message });
+    const errors = result?.error?.issues?.reduce(
+      (acc: Record<string, string>, err) => {
+        const key = err.path.join(".");
+        acc[key] = err.message;
+        return acc;
+      },
+      {},
+    );
+
+    return res.status(httpStatus.BAD_REQUEST).json({ message: errors });
   }
 
   try {

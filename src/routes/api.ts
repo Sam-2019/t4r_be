@@ -2,27 +2,18 @@ import express from "express";
 import { saleRouter } from "./sale";
 import { searchRouter } from "./search";
 import { vehicleRouter } from "./vehicle";
-import { requestRouter } from "./request";
 import { paymentRouter } from "./payment";
 import { profileRouter } from "./profile";
-import { document } from "@/services/openapi/document";
-import { apiReference } from "@scalar/express-api-reference";
+import { transactionRouter } from "./transaction";
+import { registrationRouter } from "./registration";
 
 const apiRouter = express.Router();
-apiRouter.use(
-  "/openapi",
-  apiReference({
-    darkMode: true,
-    theme: "purple",
-    layout: "modern",
-    content: document,
-  }),
-);
 apiRouter.use(saleRouter);
 apiRouter.use(searchRouter);
 apiRouter.use(vehicleRouter);
-apiRouter.use(requestRouter);
 apiRouter.use(paymentRouter);
 apiRouter.use(profileRouter);
+apiRouter.use(transactionRouter);
+apiRouter.use(registrationRouter);
 
 export default apiRouter;

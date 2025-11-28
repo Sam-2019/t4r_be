@@ -1,18 +1,20 @@
-import { betterAuth } from "better-auth";
-import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { fromNodeHeaders } from "better-auth/node";
-import type { Request } from "express";
-import { admin } from "better-auth/plugins";
-import { config } from "@/config/index";
-
 import mongoose from "mongoose";
+import type { Request } from "express";
+import Person from "./db/model/person";
+import { config } from "@/config/index";
+import { betterAuth } from "better-auth";
+import { ac, admin } from "./permissions";
+import { fromNodeHeaders } from "better-auth/node";
+import { makeadmin, makeuser } from "./db/repository/person";
+import { admin as adminPlugin } from "better-auth/plugins";
+import { mongodbAdapter } from "better-auth/adapters/mongodb";
 
 declare global {
   var _mongooseConnection:
     | {
-      conn: typeof mongoose | null;
-      promise: Promise<typeof mongoose> | null;
-    }
+        conn: typeof mongoose | null;
+        promise: Promise<typeof mongoose> | null;
+      }
     | undefined;
 }
 
@@ -63,18 +65,25 @@ const client = await getClient();
 
 export const auth = betterAuth({
   database: mongodbAdapter(client),
-  plugins: [admin()],
+  plugins: [
+    adminPlugin({
+      ac,
+      roles: {
+        admin: admin,
+      },
+    }),
+  ],
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
   },
-  advanced: {
-    defaultCookieAttributes: {
-      sameSite: "none",
-      secure: true,
-      partitioned: true
-    }
-  },
+  // advanced: {
+  //   defaultCookieAttributes: {
+  //     sameSite: "none",
+  //     secure: true,
+  //     partitioned: true
+  //   }
+  // },
   trustedOrigins: [String(config.auth.origin)],
   telemetry: {
     enabled: true,
@@ -108,7 +117,6 @@ export const auth = betterAuth({
       enabled: true, // Enable caching session in cookie (default: `false`)
       maxAge: 3000, // 5 minutes
     },
-
   },
   user: {
     modelName: "users",
@@ -121,10 +129,41 @@ export const auth = betterAuth({
         type: "string",
         required: true,
       },
+      admin: {
+        type: "boolean",
+        required: false,
+        defaultValue: false,
+        input: false,
+      },
     },
   },
   account: {
     modelName: "accounts",
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          return {
+            data: {
+              ...user,
+              name: `${user.firstName} ${user.lastName}`,
+            },
+          };
+        },
+        after: async (user) => {
+          await Person.create({
+            ...user,
+            user: user.id,
+          });
+        },
+      },
+      update: {
+        after: async (user) => {
+          user.role === "admin" ? await makeuser(user) : await makeadmin(user);
+        },
+      },
+    },
   },
 });
 

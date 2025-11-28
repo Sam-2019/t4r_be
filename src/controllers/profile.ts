@@ -1,25 +1,29 @@
-import { auth } from "@/services/auth";
-import {
-  addvehicle,
-  deletevehicle,
-  getuservehicles,
-  totalVehicles,
-  totalVehiclesBooked,
-  updatevehicle,
-} from "../services/db/repository/vehicle";
 import {
   httpStatus,
   vehicleAdded,
   vehicleDeleted,
   vehicleUpdated,
 } from "@/config/constants";
-import { vehicleSchema, queryNumberSchema } from "../services/validators";
+import {
+  addvehicle,
+  deletevehicle,
+  updatevehicle,
+  totalVehicles,
+  getuservehicles,
+  totalVehiclesBooked,
+  totalVehiclesAddedToday,
+} from "@/db/repository/vehicle";
+import { auth } from "@/services/betterauth";
 import { fromNodeHeaders } from "better-auth/node";
+import { getsearches } from "@/db/repository/search";
+import { gettransactions } from "@/db/repository/transaction";
 import type { Request, Response, NextFunction } from "express";
-import { getuserrequests } from "../services/db/repository/request";
-import { getsales, todaySale, totalSale } from "../services/db/repository/sale";
+import { findperson, getpersons } from "@/db/repository/person";
+import { getregistrations } from "@/db/repository/registration";
+import { getsales, todaySale, totalSale } from "@/db/repository/sale";
+import { vehicleSchema, queryNumberSchema } from "@/services/validators";
 
-export const profileData = async (
+export const profile = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -30,10 +34,10 @@ export const profileData = async (
   const user = session?.user;
 
   // if (!user) {
-  //   return res.status(httpStatus.FORBIDDEN).json({
-  //     message: "Invalid user",
+  //   return res.status(httpStatus.UNAUTHORIZED).json({
   //     data: {},
-  //   });
+  //     message: "Invalid User"
+  //   })
   // }
 
   try {
@@ -41,24 +45,37 @@ export const profileData = async (
     const todaysales = await todaySale(user);
     const totalvehicles = await totalVehicles(user);
     const bookedvehicles = await totalVehiclesBooked(user);
+    const addedToday = await totalVehiclesAddedToday(user);
 
     const vehicles = await getuservehicles(user);
-    const transactions = await getsales(user);
-    const requests = await getuserrequests(user);
+    const transactions = await gettransactions(user);
+    const revenue = await getsales(user);
+    const registrations = await getregistrations(user);
+    const users = await getpersons(user);
+    const search = await getsearches();
+    const utilizationmod = ((bookedvehicles / totalvehicles) * 100).toFixed(0)
 
     res.status(httpStatus.OK).json({
       data: {
         dashboard: {
-          totalSales: totalsales || 0,
-          todaySales: todaysales || 0,
-          totalVehicles: totalvehicles || 0,
-          bookedVehicles: bookedvehicles || 0,
+          sales: {
+            total: totalsales[0] || 0,
+            today: todaysales[0] || 0,
+          },
+          vehicles: {
+            total: totalvehicles || 0,
+            active: bookedvehicles || 0,
+            addedToday: addedToday || 0,
+            utilization: utilizationmod
+          },
         },
         vehicles: vehicles,
-        revenue: transactions,
+        revenue: revenue,
         transactions: transactions,
-        requests: requests,
+        registrations: registrations,
         profile: session,
+        users: users,
+        search: search,
       },
     });
   } catch (error) {
@@ -75,12 +92,20 @@ export const createVehicle = async (
   const result = vehicleSchema.safeParse(req.body);
 
   if (!result.success) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: result.error.issues[0]?.message });
+    const errors = result?.error?.issues?.reduce(
+      (acc: Record<string, string>, err) => {
+        const key = err.path.join(".");
+        acc[key] = err.message;
+        return acc;
+      },
+      {},
+    );
+
+    return res.status(httpStatus.BAD_REQUEST).json({ message: errors });
   }
 
   try {
+    const person = await findperson(result.data.user);
     const images = result?.data?.images;
     const multipleImages = [];
 
@@ -99,6 +124,7 @@ export const createVehicle = async (
     const modData = {
       ...result?.data,
       images: multipleImages,
+      person: person?._id,
     };
     await addvehicle(modData);
     res.status(httpStatus.CREATED).json({ message: vehicleAdded });
@@ -113,13 +139,19 @@ export const updateVehicle = async (
   res: Response,
   next: NextFunction,
 ) => {
-  console.log({ body: req.body });
   const result = vehicleSchema.safeParse(req.body);
 
   if (!result.success) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: result.error.issues[0]?.message });
+    const errors = result?.error?.issues?.reduce(
+      (acc: Record<string, string>, err) => {
+        const key = err.path.join(".");
+        acc[key] = err.message;
+        return acc;
+      },
+      {},
+    );
+
+    return res.status(httpStatus.BAD_REQUEST).json({ message: errors });
   }
 
   try {
@@ -155,15 +187,19 @@ export const deleteVehicle = async (
   res: Response,
   next: NextFunction,
 ) => {
-  console.log({ body: req.body });
   const result = queryNumberSchema.safeParse(req);
 
-  console.log(result);
-
   if (!result.success) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: result.error.issues[0]?.message });
+    const errors = result?.error?.issues?.reduce(
+      (acc: Record<string, string>, err) => {
+        const key = err.path.join(".");
+        acc[key] = err.message;
+        return acc;
+      },
+      {},
+    );
+
+    return res.status(httpStatus.BAD_REQUEST).json({ message: errors });
   }
 
   try {

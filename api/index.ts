@@ -5,8 +5,8 @@ import bodyParser from "body-parser";
 import { config } from "@/src/config";
 import { router } from "@/routes/index";
 import { ping } from "@/services/pinger";
-import { auth } from "@/src/services/auth";
 import { connectDB } from "@/src/services/db";
+import { auth } from "@/src/services/betterauth";
 import { toNodeHandler, fromNodeHeaders } from "better-auth/node";
 
 const app = express();
@@ -21,12 +21,12 @@ app.use(
 ping();
 await connectDB();
 app.all("/api/auth/{*any}", toNodeHandler(auth));
-app.get("/api/me", async (req, res) => {
-  const session = await auth.api.getSession({
-    headers: fromNodeHeaders(req.headers),
-  });
-  return res.json(session);
-});
+// app.get("/api/me", async (req, res) => {
+//   const session = await auth.api.getSession({
+//     headers: fromNodeHeaders(req.headers),
+//   });
+//   return res.json(session);
+// });
 
 app.use(bodyParser.json());
 app.disable("x-powered-by");

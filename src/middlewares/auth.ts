@@ -1,6 +1,6 @@
 import { config } from "@/config/index";
-import type { Request, Response, NextFunction } from "express";
 import { authorizationSchema } from "@/services/validators";
+import type { Request, Response, NextFunction } from "express";
 import { forbidden, unauthorized, httpStatus } from "@/config/constants";
 
 export const authMiddleware = (

@@ -4,7 +4,7 @@ import {
   saleIdSchema,
   vehicleSchema,
   vehicleIdSchema,
-} from "../validators";
+} from "@/services/validators";
 import type { ZodOpenApiOperationObject } from "zod-openapi";
 
 export const createVehicle: ZodOpenApiOperationObject = {

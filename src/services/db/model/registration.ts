@@ -11,8 +11,9 @@ const requestorSchema = new Schema(
 
 const dataSchema = new Schema(
   {
-    vehicleId: { type: Schema.Types.ObjectId, ref: "Vehicle" },
-    userId: { type: Schema.Types.ObjectId, ref: "User" },
+    user: { type: Schema.Types.ObjectId },
+    person: { type: Schema.Types.ObjectId, ref: "Person" },
+    vehicle: { type: Schema.Types.ObjectId, ref: "Vehicle" },
     type: {
       type: String,
       required: true,
@@ -20,13 +21,13 @@ const dataSchema = new Schema(
     },
     industry: {
       type: String,
-      required: true,
       trim: true,
+      default: "Other",
     },
     subIndustry: {
       type: String,
-      required: true,
       trim: true,
+      default: "Other",
     },
     requestor: {
       type: requestorSchema,
@@ -55,17 +56,12 @@ const dataSchema = new Schema(
       required: true,
       trim: true,
     },
-    clientReference: {
-      type: String,
-      required: true,
-      trim: true,
-    },
   },
   {
     timestamps: true,
   },
 );
 
-const Request = model("Request", dataSchema);
+const Registration = model("Registration", dataSchema);
 
-export default Request;
+export default Registration;

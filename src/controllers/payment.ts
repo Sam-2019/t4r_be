@@ -3,15 +3,18 @@ import {
   notFound,
   duplicate,
   httpStatus,
-  emptyRequest,
   paymentProvider,
 } from "@/config/constants";
-import { fetchRequest, modSaleRecord } from "../utils";
-import { referenceSchema } from "@/services/validators";
-import { getrequest } from "@/services/db/repository/request";
+import { findperson } from "@/db/repository/person";
+import { addCallback } from "@/db/repository/callback";
+import { addsale, findsale } from "@/db/repository/sale";
+import { fetchRequest, modSaleRecord } from "@/src/utils";
 import type { Request, Response, NextFunction } from "express";
-import { addCallback } from "@/services/db/repository/callback";
-import { addsale, findsale } from "@/services/db/repository/sale";
+import { callbackSchema, referenceSchema } from "@/services/validators";
+import {
+  findtransaction,
+  updateTransaction,
+} from "@/db/repository/transaction";
 
 // provider callback route
 export const callback = async (
@@ -19,28 +22,36 @@ export const callback = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const results = req.body;
-  if (results === undefined || results === null) {
-    return res.status(httpStatus.BAD_REQUEST).json({ message: emptyRequest });
+  const result = callbackSchema.safeParse(req);
+  if (!result.success) {
+    const errors = result?.error?.issues?.reduce(
+      (acc: Record<string, string>, err) => {
+        const key = err.path.join(".");
+        acc[key] = err.message;
+        return acc;
+      },
+      {},
+    );
+    return res.status(httpStatus.BAD_REQUEST).json({ message: errors });
   }
 
-  const logCallback = { provider: paymentProvider, response: results };
-  const responseCode = results?.ResponseCode;
-  const message = results?.Message;
+  const logCallback = {
+    provider: paymentProvider,
+    response: result?.data?.body,
+  };
+  const message = result?.data?.body?.Message;
 
-  if (message !== success) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: `Payment callback with status: ${responseCode}` });
-  }
-
-  const responseData = results?.Data;
+  const responseData = result?.data?.body?.Data;
   const clientReference = responseData?.ClientReference;
   try {
     await addCallback(logCallback);
-    const requestByRef = await getrequest(clientReference);
-    if (!requestByRef) {
+    const transaction = await findtransaction(clientReference);
+    if (!transaction) {
       return res.status(httpStatus.NOT_FOUND).json({ message: notFound });
+    }
+
+    if (transaction) {
+      await updateTransaction(clientReference, message);
     }
 
     const sale = await findsale(clientReference);
@@ -50,8 +61,11 @@ export const callback = async (
         .json({ message: duplicate, data: sale });
     }
 
-    const record = modSaleRecord({ requestByRef, results });
-    await addsale(record);
+    const record = modSaleRecord({ transaction, result });
+    const person = await findperson(record?.user);
+    const modData = { ...record, person: person?._id };
+
+    await addsale(modData);
     res.status(httpStatus.CREATED).json({ message: success });
   } catch (error) {
     next(error);
@@ -66,9 +80,16 @@ export const getStatus = async (
 ) => {
   const result = referenceSchema.safeParse(req);
   if (!result.success) {
-    return res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ message: result?.error?.issues[0]?.message });
+    const errors = result?.error?.issues?.reduce(
+      (acc: Record<string, string>, err) => {
+        const key = err.path.join(".");
+        acc[key] = err.message;
+        return acc;
+      },
+      {},
+    );
+
+    return res.status(httpStatus.BAD_REQUEST).json({ message: errors });
   }
 
   try {

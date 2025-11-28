@@ -1,8 +1,14 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 import Sale from "@/db/model/sale";
+import mongoose from "mongoose";
+
+const date = Date.now();
+const startDate = new Date(new Date(date).setHours(0, 0, 0));
+const endDate = new Date(new Date(date).setHours(23, 59, 59, 999));
 
 const getsales = async (data: any) => {
-  if (data?.role === "user") return await Sale.find({ userId: data.id }).lean();
-  return await Sale.find({}).lean();
+  if (data?.admin) return await Sale.find().lean();
+  return await Sale.find({ user: data?.id }).lean();
 };
 
 const findsale = async (clientReference: string) => {
@@ -15,30 +21,31 @@ const addsale = async (data: any) => {
   return await Sale.create(data);
 };
 
-const todaySale = async (data: any) => {
-  return await Sale.aggregate([
-    {
-      $group: {
-        _id: "createdAt",
-        todaySales: { $sum: "$amount" },
+const totalSale = async (data: any) => {
+  if (data?.admin)
+    return await Sale.aggregate([
+      {
+        $group: {
+          _id: "amount",
+          value: { $sum: "$amount" },
+          count: { $sum: 1 },
+        },
       },
-    },
-    {
-      $sort: { _id: 1 },
-    },
-  ]);
-};
-const totalSale = async (user: any) => {
-  // const id = user?.id;
-  // console.log({ id });
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+  const user = new mongoose.Types.ObjectId(data?.id);
   return await Sale.aggregate([
-    // {
-    //   $match: { vehicleId: "dave" }
-    // },
+    {
+      $match: { user: user },
+    },
     {
       $group: {
         _id: "amount",
-        totalSales: { $sum: "$amount" },
+        value: { $sum: "$amount" },
+        count: { $sum: 1 }
       },
     },
     {
@@ -47,10 +54,51 @@ const totalSale = async (user: any) => {
   ]);
 };
 
-const getusersales = async (data: any) => {
-  if (data?.role === "user") return await Sale.find({ userId: data.id }).lean();
+const todaySale = async (data: any) => {
+  if (data?.admin)
+    return await Sale.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "createdAt",
+          value: { $sum: "$amount" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
 
-  return await Sale.find({}).lean();
+  const user = new mongoose.Types.ObjectId(data?.id);
+  return await Sale.aggregate([
+    {
+      $match: {
+        user: user,
+        createdAt: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "createdAt",
+        value: { $sum: "$amount" },
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { _id: 1 },
+    },
+  ]);
 };
 
-export { getsales, findsale, addsale, totalSale, todaySale, getusersales };
+export { getsales, findsale, addsale, totalSale, todaySale };

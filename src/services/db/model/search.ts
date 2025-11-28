@@ -81,6 +81,11 @@ const dataSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    status: {
+      type: String,
+      default: "pending",
+      trim: true,
+    },
   },
   { timestamps: true },
 ); // Adds createdAt and updatedAt fields automatically
